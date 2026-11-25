@@ -1,0 +1,43 @@
+-- SORU 1: INNER JOIN
+SELECT r.name, o.operator_name, o.phone
+FROM robots r
+INNER JOIN operators o
+ON r.operator_name = o.operator_name;
+
+-- SORU 2: LEFT JOIN
+SELECT r.name, o.operator_name, o.phone
+FROM robots r
+LEFT JOIN operators o
+ON r.operator_name = o.operator_name;
+
+-- SORU 3: Hiç görev almamış robotlar
+SELECT r.name, r.model
+FROM robots r
+LEFT JOIN missions m
+ON r.id = m.robot_id
+WHERE m.id IS NULL;
+
+-- SORU 4A: JOIN ile toplam batarya
+SELECT SUM(r.battery_level)
+FROM robots r
+INNER JOIN missions m
+ON r.id = m.robot_id;
+
+-- SORU 4B: JOIN olmadan toplam batarya
+SELECT SUM(r.battery_level)
+FROM robots r
+WHERE EXISTS (
+    SELECT 1
+    FROM missions m
+    WHERE m.robot_id = r.id
+);
+
+-- SORU 5: Robot başına görev sayısı
+SELECT r.name,
+       COUNT(*) AS toplam_satir,
+       COUNT(m.id) AS gorev_sayisi
+FROM robots r
+LEFT JOIN missions m
+ON r.id = m.robot_id
+GROUP BY r.id, r.name
+ORDER BY r.id;
